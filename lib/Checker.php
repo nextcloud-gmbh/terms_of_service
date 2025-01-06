@@ -12,6 +12,7 @@ use OCA\TermsOfService\Db\Mapper\TermsMapper;
 use OCP\IConfig;
 use OCP\IRequest;
 use OCP\ISession;
+use OCP\IURLGenerator;
 use OCP\IUser;
 use OCP\IUserSession;
 use OCP\IL10N;
@@ -38,6 +39,8 @@ class Checker {
 	private $logger;
 	/** @var array */
 	private $termsCache = [];
+	/** @var IURLGenerator */
+	private $url;
 
 	public function __construct(
 		IRequest $request,
@@ -48,7 +51,8 @@ class Checker {
 		CountryDetector $countryDetector,
 		IConfig $config,
 		IL10N $l10n,
-		LoggerInterface $logger
+		LoggerInterface $logger,
+		IURLGenerator $url
 	) {
 		$this->request = $request;
 		$this->userSession = $userSession;
@@ -59,10 +63,11 @@ class Checker {
 		$this->config = $config;
 		$this->l10n = $l10n;
 		$this->logger = $logger;
+		$this->url = $url;
 	}
 
 	public function getForbiddenMessage(): string {
-		return $this->l10n->t('Terms of service are not signed');
+		return $this->url->getBaseUrl();
 	}
 
 	/**
